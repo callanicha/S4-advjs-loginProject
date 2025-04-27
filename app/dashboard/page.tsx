@@ -13,18 +13,25 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const token = localStorage.getItem("token")
-    if (!token) {
+    const userInfo = localStorage.getItem("user")
+
+    if (!token || !userInfo) {
       router.push("/login")
       return
     }
 
-    // Optional: parse token to get user info
-    const userData = { name: "User", email: "user@example.com" }
-    setUser(userData)
+    try {
+      const parsedUser = JSON.parse(userInfo)
+      setUser(parsedUser)
+    } catch (error) {
+      console.error("Error parsing user info", error)
+      router.push("/login")
+    }
   }, [router])
 
   const handleLogout = () => {
     localStorage.removeItem("token")
+    localStorage.removeItem("user")
     router.push("/login")
   }
 
@@ -66,6 +73,7 @@ export default function DashboardPage() {
                   <p>Active</p>
                 </div>
               </div>
+
               <div className="p-6 border rounded-lg bg-white shadow-sm">
                 <h3 className="font-medium text-lg mb-4 text-primary">Actions</h3>
                 <div className="space-y-2">

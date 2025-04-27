@@ -36,7 +36,8 @@ export default function LoginPage() {
 
       if (res.ok) {
         const data = await res.json()
-        localStorage.setItem("token", data.token) // Save token!
+        localStorage.setItem("token", data.token)
+        localStorage.setItem("user", JSON.stringify({ name: data.name, email: data.email }))
         alert("Login successful!")
         router.push("/dashboard")
       } else {
