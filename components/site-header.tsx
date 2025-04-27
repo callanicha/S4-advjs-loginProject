@@ -28,7 +28,7 @@ export function SiteHeader() {
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
           <Heart className="h-5 w-5 fill-primary" />
-          <span>ADV JS , log in & Sign up Project</span>
+          <span>ADV JS Project</span>
         </Link>
         <nav className="flex items-center gap-4">
           {isLoggedIn ? (

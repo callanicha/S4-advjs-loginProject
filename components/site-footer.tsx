@@ -8,10 +8,10 @@ export function SiteFooter() {
         <div className="flex flex-col items-center md:items-start">
           <div className="flex items-center gap-2 mb-2">
             <Heart className="h-4 w-4 fill-primary" />
-            <p className="text-sm font-medium">ADV JS , log in & Sign up Project</p>
+            <p className="text-sm font-medium">ADV JS Project</p>
           </div>
           <p className="text-center text-sm text-muted-foreground md:text-left">
-            &copy; {new Date().getFullYear()} ADV JS , log in & Sign up Project. All rights reserved.
+            &copy; {new Date().getFullYear()} ADV JS Project. All rights reserved.
           </p>
           <p className="text-center text-sm text-muted-foreground md:text-left mt-1">
             Created by Natthanicha VONGJARIT

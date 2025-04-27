@@ -1,39 +1,56 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useRouter } from "next/navigation"
 import { Heart } from "lucide-react"
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // In a real app, you would verify credentials with your backend
-    console.log("Login attempt with:", { email, password })
 
-    // Simulate successful login
-    const userData = {
-      name: email.split("@")[0], // Just using part of email as name for demo
-      email: email,
+    try {
+      setLoading(true)
+      const res = await fetch(`${API_BASE_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        localStorage.setItem("token", data.token) // Save token!
+        alert("Login successful!")
+        router.push("/dashboard")
+      } else {
+        const errorData = await res.json()
+        alert(`Login failed: ${errorData.message || "Unknown error"}`)
+      }
+    } catch (err) {
+      console.error(err)
+      alert("Login failed: server error")
+    } finally {
+      setLoading(false)
     }
-
-    // Store user data in localStorage (in a real app, you'd store a token)
-    localStorage.setItem("user", JSON.stringify(userData))
-
-    // Redirect to dashboard
-    router.push("/dashboard")
   }
+
 
   return (
     <main className="flex-1 flex items-center justify-center py-12 bg-gradient-to-b from-pastel-100 to-white px-4">

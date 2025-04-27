@@ -5,31 +5,26 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Heart } from "lucide-react"
+import Link from "next/link"
 
 export default function DashboardPage() {
   const router = useRouter()
   const [user, setUser] = useState<{ name: string; email: string } | null>(null)
 
   useEffect(() => {
-    // Check if user is logged in
-    const loggedInUser = localStorage.getItem("user")
-    if (!loggedInUser) {
-      // Redirect to login if not logged in
+    const token = localStorage.getItem("token")
+    if (!token) {
       router.push("/login")
       return
     }
 
-    try {
-      setUser(JSON.parse(loggedInUser))
-    } catch (error) {
-      console.error("Failed to parse user data", error)
-      localStorage.removeItem("user")
-      router.push("/login")
-    }
+    // Optional: parse token to get user info
+    const userData = { name: "User", email: "user@example.com" }
+    setUser(userData)
   }, [router])
 
   const handleLogout = () => {
-    localStorage.removeItem("user")
+    localStorage.removeItem("token")
     router.push("/login")
   }
 
@@ -69,6 +64,16 @@ export default function DashboardPage() {
                 <div className="flex items-center space-x-2">
                   <div className="h-3 w-3 rounded-full bg-green-500"></div>
                   <p>Active</p>
+                </div>
+              </div>
+              <div className="p-6 border rounded-lg bg-white shadow-sm">
+                <h3 className="font-medium text-lg mb-4 text-primary">Actions</h3>
+                <div className="space-y-2">
+                  <Link href="/create-product">
+                    <Button className="w-full rounded-full bg-primary text-white">
+                      Create New Product
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
