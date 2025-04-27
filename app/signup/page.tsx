@@ -1,16 +1,16 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useRouter } from "next/navigation"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Heart } from "lucide-react"
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function SignupPage() {
   const [name, setName] = useState("")
@@ -18,24 +18,47 @@ export default function SignupPage() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Validate passwords match
+
     if (password !== confirmPassword) {
-      alert("Passwords don't match!")
+      alert("Passwords do not match")
       return
     }
 
-    // In a real app, you would send this data to your backend
-    console.log("Signup attempt with:", { name, email, password, agreedToTerms })
+    try {
+      setLoading(true)
+      const res = await fetch(`${API_BASE_URL}/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password
+        })
+      })
 
-    // Show success message and redirect to login
-    alert("Account created successfully! Please log in.")
-    router.push("/login")
+      if (res.ok) {
+        alert("Account created! Please log in.")
+        router.push("/login")
+      } else {
+        const errorData = await res.json()
+        alert(`Signup failed: ${errorData.message || "Unknown error"}`)
+      }
+    } catch (err) {
+      console.error(err)
+      alert("Signup failed: server error")
+    } finally {
+      setLoading(false)
+    }
   }
+
 
   return (
     <main className="flex-1 flex items-center justify-center py-12 bg-gradient-to-b from-pastel-100 to-white px-4">
